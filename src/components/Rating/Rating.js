@@ -1,5 +1,5 @@
 import React from 'react';
-
+import styles from './Rating.module.scss';
 const Rating = () => {
     debugger
     const randomRating = Math.round(Math.random() * 5 * 100) / 100
@@ -17,13 +17,18 @@ const Rating = () => {
 
                 <span
                     style={{
-                        background: 'linear-gradient(to right, #7db9e8 50%,#7db9e8 50%)',
-                        paddingLeft: '5px',
-                        marginLeft: '5px'
+                        marginLeft: '5px',
                     }}
                     key={span}
                 >
-                    X</span>
+                    <i className="fa fa-star"
+                        style={{
+                            fontSize: '30px',
+                            color:'#FFD700'
+                        }}
+                        aria-hidden="true"></i>
+
+                </span>
 
             )
         })
@@ -37,12 +42,25 @@ const Rating = () => {
             {completedPart()}
             <span
                 style={{
-                    background: `linear-gradient(to right, #7db9e8 ${fraction}%,#1e5799 ${remainFraction}%)`,
-                    paddingLeft: '5px',
                     marginLeft: '5px'
                 }}
+                className={styles.lastIcon}
             >
-                X</span>
+                <i className="fa fa-star"
+                    style={{
+                        fontSize: '30px',
+                        background: `linear-gradient(to right, #FFD700 ${fraction}%,#ddd ${remainFraction}%)`,
+
+                        backgroundClip: 'text',
+                        WebkitBackgroundClip: 'text',
+                        MozBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent'
+
+                    }}
+
+
+                    aria-hidden="true"></i>
+            </span>
         </>
     )
 }
