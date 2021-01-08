@@ -4,7 +4,7 @@ import styles from './SingleProduct.module.scss';
 
 
 const SingleProduct = ({ product }) => {
-    console.log('product', product)
+  
     return (
         <div className={styles.parent}>
             <div className={styles.imageContainer}>

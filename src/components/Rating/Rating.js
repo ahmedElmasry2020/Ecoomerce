@@ -1,7 +1,6 @@
 import React from 'react';
 import styles from './Rating.module.scss';
 const Rating = () => {
-    debugger
     const randomRating = Math.round(Math.random() * 5 * 100) / 100
     const randomRatingCompleted = Math.trunc(randomRating)
     const fraction = (randomRating % 1) * 100
