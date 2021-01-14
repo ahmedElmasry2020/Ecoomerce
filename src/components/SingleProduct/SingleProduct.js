@@ -8,7 +8,7 @@ const SingleProduct = ({ product }) => {
     return (
         <div className={styles.parent}>
             <div className={styles.imageContainer}>
-                <img src={product.image} className={styles.image} />
+                <img src={product.image} className={styles.image} alt="product"/>
             </div>
             <div className={styles.description}>
                 <p className={styles.category}>{product.category}</p>

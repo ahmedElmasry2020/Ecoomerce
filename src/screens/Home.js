@@ -1,32 +1,43 @@
 import React, { useEffect, useState } from 'react';
-import SingleProduct from '../components/SingleProduct/SingleProduct'
+import Loading from '../components/Loading/Loading';
+import SingleProduct from '../components/SingleProduct/SingleProduct';
+import helpers from '../help/help'
 //import axios from 'axios'
 const Home = (props) => {
 
+    const [loadingcom, isLoading] = useState(false)
     const [products, setProducts] = useState([])
-    useEffect(() => {
-        itemAPIResponse()
+    useEffect(async () => {
+        isLoading(true)
+        await itemAPIResponse()
+        isLoading(false)
     }, [])
+
     const itemAPIResponse = async () => {
         const data = await fetch('https://fakestoreapi.com/products')
         const dataResponse = await data.json()
         setProducts(dataResponse)
     }
 
+
     const searchItems = (e) => {
-        //  debugger
+        
         e.preventDefault()
         const searchText = e.target?.value.toLowerCase()
         if (searchText) {
             const searchedProducts = products.filter((singleProduct) => {
-                return singleProduct?.category?.toLowerCase().search(searchText) !== -1 || singleProduct?.title?.toLowerCase().search(searchText) !== -1
+                return helpers.wordInString(singleProduct?.category?.toLowerCase(), searchText) || helpers.wordInString(singleProduct?.title?.toLowerCase(), searchText)
             })
-            setProducts(searchedProducts)
-
+            if (searchedProducts.length > 0) {
+                setProducts(searchedProducts)
+            }
         }
         else {
+            isLoading(true)
+            itemAPIResponse().then(data => isLoading(false)).catch(err => {
+                isLoading(false)
+            })
 
-            itemAPIResponse()
         }
 
     }
@@ -35,17 +46,20 @@ const Home = (props) => {
             <SingleProduct product={product} key={product.id} />
         )
     })
+
     return (
+
         <div style={styles.parent}>
             <div style={styles.searchBar}>
                 <i className="fa fa-search" style={styles.searchIcon} aria-hidden="true"></i>
                 <input type="text" style={styles.searchText} placeholder="Search products, brands and categories" onChange={searchItems} />
             </div>
             <div style={styles.container}>
-                {productArr}
+                {loadingcom ? <Loading /> : productArr}
             </div>
         </div>
     )
+
 
 }
 const styles = {

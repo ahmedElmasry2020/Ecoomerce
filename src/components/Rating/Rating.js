@@ -18,7 +18,7 @@ const Rating = () => {
                     style={{
                         marginLeft: '5px',
                     }}
-                    key={span}
+                    key={index}
                 >
                     <i className="fa fa-star"
                         style={{
@@ -49,7 +49,6 @@ const Rating = () => {
                     style={{
                         fontSize: '30px',
                         background: `linear-gradient(to right, #FFD700 ${fraction}%,#ddd ${remainFraction}%)`,
-
                         backgroundClip: 'text',
                         WebkitBackgroundClip: 'text',
                         MozBackgroundClip: 'text',
