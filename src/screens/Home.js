@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Loading from '../components/Loading/Loading';
 import SingleProduct from '../components/SingleProduct/SingleProduct';
 import helpers from '../help/help'
@@ -7,21 +7,31 @@ const Home = (props) => {
 
     const [loadingcom, isLoading] = useState(false)
     const [products, setProducts] = useState([])
+    const [sortOption, setOption] = useState(null)
+    const sortSelection = useRef(null)
     useEffect(async () => {
         isLoading(true)
-        await itemAPIResponse()
+        const dataResponse=await itemAPIResponse()
+        setProducts(dataResponse)
         isLoading(false)
     }, [])
+
+    useEffect(async() => {
+        debugger
+        isLoading(true)
+        const dataResponse=await itemAPIResponse()
+        setProducts(dataResponse)
+        isLoading(false)
+
+    }, [sortOption])
 
     const itemAPIResponse = async () => {
         const data = await fetch('https://fakestoreapi.com/products')
         const dataResponse = await data.json()
-        setProducts(dataResponse)
+        return dataResponse
     }
-
-
     const searchItems = (e) => {
-        
+
         e.preventDefault()
         const searchText = e.target?.value.toLowerCase()
         if (searchText) {
@@ -41,6 +51,28 @@ const Home = (props) => {
         }
 
     }
+    const selction = async() => {
+        const sorting = sortSelection.current.value
+        let highsortedProducts ;
+        let lowsortedProducts;
+        let allProducts ;
+        if (sorting == 'high') {
+            allProducts= await itemAPIResponse()
+            highsortedProducts = allProducts.sort(helpers.dynamicSort('price')).slice(allProducts.length - 2, allProducts.length)
+            setProducts(highsortedProducts)
+                
+        }
+        else if (sorting == 'low') {
+            allProducts= await itemAPIResponse()
+            lowsortedProducts = allProducts.sort(helpers.dynamicSort('price')).slice(0, 2)
+            setProducts(lowsortedProducts)            
+        }
+        else{
+            allProducts= await itemAPIResponse()
+            setProducts(allProducts)            
+        }
+
+    }
     const productArr = products.map((product) => {
         return (
             <SingleProduct product={product} key={product.id} />
@@ -53,6 +85,14 @@ const Home = (props) => {
             <div style={styles.searchBar}>
                 <i className="fa fa-search" style={styles.searchIcon} aria-hidden="true"></i>
                 <input type="text" style={styles.searchText} placeholder="Search products, brands and categories" onChange={searchItems} />
+                <div style={styles.sorting}>
+                    <label for="sort">Sort By:</label>
+                    <select style={styles.sortingSelection} ref={sortSelection} id="sort" onChange={selction}>
+                        <option>&#160;</option>
+                        <option value="high">High</option>
+                        <option value="low">Low</option>
+                    </select>
+                </div>
             </div>
             <div style={styles.container}>
                 {loadingcom ? <Loading /> : productArr}
@@ -90,7 +130,19 @@ const styles = {
         padding: '.7rem 0rem .7rem 2.5rem',
         outline: 'none',
         borderRadius: '5px'
+    }, sorting: {
+        position: 'absolute',
+        top: '0px',
+        right: '3rem',
+        fontSize: '1.5rem',
+    },
+    sortingSelection: {
+        width: "90px",
+        height: "28px",
+        fontSize: '1.1rem',
+        marginLeft: '10px'
     }
+
 }
 
 export default Home
